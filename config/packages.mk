@@ -5,7 +5,8 @@ PRODUCT_PACKAGES += \
     SparkThemesStub \
     QuickAccessWallet \
     wellbeingconf \
-    googleconf
+    googleconf \
+    GmsCompat
 
 ifneq ($(TARGET_NO_PREBUILT_CAMERA),true)
 PRODUCT_PACKAGES += \
