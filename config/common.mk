@@ -324,3 +324,6 @@ ifeq ($(TARGET_SUPPORTS_ADAPTIVE_CHARGING),true)
 PRODUCT_COPY_FILES += \
     vendor/spark/prebuilt/common/etc/sysconfig/dreamliner.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/sysconfig/dreamliner.xml
 endif
+
+# Pixel Framework
+$(call inherit-product, vendor/pixel-framework/config.mk)
