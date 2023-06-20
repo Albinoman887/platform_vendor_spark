@@ -16,44 +16,26 @@ then
 	rm -f $Changelog
 fi
 
-# Assuming this script is run from TOP of workspace
-export formatter_script=$(realpath vendor/spark/tools/changelog_repo_formatter.sh)
-
 touch $Changelog
 
 # Print something to build output
 echo "Generating changelog..."
 
-for i in $(seq 14);
-do
-	export After_Date=$(/usr/bin/date --date="$i days ago" +%Y/%m/%d)
-	k=$(expr $i - 1)
-	export Until_Date=$(/usr/bin/date --date="$k days ago" +%Y/%m/%d)
-
-	# Line with after --- until was too long for a small ListView
-	echo '=======================' >> $Changelog;
-	echo  "     "$Until_Date       >> $Changelog;
-	echo '=======================' >> $Changelog;
-	echo >> $Changelog;
-
     # # Cycle through all available repos
+	 	export After_Date=$(/usr/bin/date --date="14 days ago" +%Y/%m/%d)
      REPO_LIST="$(repo list --path | sed 's|^vendor/OTA$||')"
      for repo_path in $REPO_LIST; do
-         # Find commits between 2 dates
-         GIT_LOG="$(git -C "$repo_path" log --oneline --after="$After_Date" --until="$Until_Date")"
+         # Find commits from 13 days ago until now
+         GIT_LOG="$(git -C "$repo_path" log --since=$After_Date --pretty=format:"%cd - %s (by %an)" --date=format:"%Y-%m-%d")"
          [ -n "$GIT_LOG" ] && {
-             printf '\n   * '; echo "$repo_path"
-	 		echo ""
+             printf '\n------------------------------------------  ';
+			 printf '\n'
+			 echo "$repo_path"
+	 		 echo "------------------------------------------"
              echo "$GIT_LOG"
+			 printf '\n'
          } >> $Changelog
      done
-
-	# Cycle through every repo to find commits between 2 dates
-	#repo forall -c '. $formatter_script' >> $Changelog
-	echo >> $Changelog;
-done
-
-#sed -i 's/project/   */g' $Changelog
 
 cp $Changelog $OUT_DIR/target/product/$DEVICE/system/etc/$Changelog
 cp $Changelog $OUT_DIR/target/product/$DEVICE/
